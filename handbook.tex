@@ -1,0 +1,411 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb, mathrsfs}
+\usepackage{minted}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[top=2cm,bottom=1cm,left=1cm,right=1cm,landscape]{geometry}
+\setlength{\columnseprule}{0.4pt}
+
+\everymath{\displaystyle}
+\DeclareMathOperator{\Com}{Com}
+\DeclareMathOperator{\Conv}{Conv}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Epi}{Epi}
+\DeclareMathOperator{\Fix}{Fix}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\Parts}{\mathfrak{P}}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\Sp}{Sp}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\Val}{Val}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Vect}{Vect}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\rg}{rg}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\U}{\mathbb{U}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\abs}[1]{\left\lvert{ #1 }\right\rvert}
+\newcommand{\floor}[1]{\left\lfloor{ #1 }\right\rfloor}
+\newcommand{\braket}[1]{\left\langle #1 \right\rangle}
+\newcommand{\ind}{\mathbf 1}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\op}{\text{op}}
+\newcommand{\restr}[1]{\left. #1 \right\rvert}
+\newcommand{\seg}[1]{\left\lbracket #1 \right\rbracket}
+\newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\tend}[1]{\underset{#1}{\longrightarrow}}
+\renewcommand{\L}{\mathcal{L}}
+\renewcommand{\P}{\mathbb{P}}
+\renewcommand{\S}{\matchal{S}}
+\renewcommand{\d}{\mathrm{d}}
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\leq}{\leqslant}
+\DeclareMathOperator{\Ber}{Ber}
+\DeclareMathOperator{\Poi}{Poi}
+\DeclareMathOperator{\Bin}{Bin}
+\DeclareMathOperator{\Exp}{Exp}
+\DeclareMathOperator{\Geo}{Geo}
+
+% \title{Notebook SWERC 2022}
+% \author{\bsc{\'Ecole Polytechnique} --- Team In eXtremis}
+\pagestyle{fancy}
+
+\setlength{\headheight}{12.80502pt}
+\addtolength{\topmargin}{-0.80502pt}
+
+\begin{document}
+
+\lhead{\bsc{\'Ecole Polytechnique} --- In eXtremis}
+\chead{Notebook SWERC 2022 --- \today}
+\rhead{\thepage/\pageref{LastPage}}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+
+\tableofcontents
+
+\section{Param\`etres}
+
+\subsection{Compilation}
+\inputminted[breaklines,tabsize=4]{bash}{code/compilation.sh}
+
+\subsection{Squelette de code}
+\inputminted[breaklines,tabsize=4]{cpp}{code/skeleton.cpp}
+
+\section{Combinatoire}
+
+\subsection{Lemme de Burnside et équation aux classes}
+
+Si $\cdot$ est une action du groupe $G$ sur l'ensemble $E$ alors on définit
+\begin{align*}
+    G^x &= \set{g \in G, g \cdot x = x} \text{ le stabilisateur de $x$} \\
+    G \cdot x &= \set{g \cdot x, g \in G} \text{ l'orbite de $x$} \\
+    \Fix(g) &= \set{x \in E, g \cdot x = x} \text{ les points fixes de $g$} \\
+    \Omega &= \set{G \cdot x, x \in E} \text{ l'ensemble des orbites}
+\end{align*}
+Nous déduisons de la relation $|G \cdot x| = |G| / |G^x|$ l'équation aux classes
+$$
+    \abs\Omega
+    = \sum_{x \in E} \frac 1 {\abs{G\cdot x}}
+    = \frac 1 {\abs G} \sum_{x \in E} \abs{G^x}
+    = \frac 1 {\abs G} \sum_{x \in E} \sum_{g \in G} \ind_{g\cdot x = x}
+    = \frac 1 {\abs G} \sum_{g \in G} \abs{\Fix(g)}
+$$
+
+\subsection{Formule de Legendre}
+La valuation $p$-adique de $n!$ est
+$$
+\nu_p(n!) = \sum_{k = 1}^\infty \floor{\frac n {p^k}}
+$$
+
+\subsection{Coefficients binomiaux}
+$$
+    \binom n k = \#\set{I \subset \set{1, \dots, n}, \abs I = k} = \frac{k!(n-k)!}{n!}
+$$
+\begin{itemize}
+    \item Symm\'etrie: $\binom{n}{k} = \binom{n}{n - k}$
+    \item Formule de Pascal $\binom n k = \binom{n - 1}{k - 1} + \binom{n - 1}{k}$
+    \item Formule du chef: $n\binom{n - 1}{k - 1} = k\binom{n}{k}$
+    \item Binôme de Newton: $(a + b)^n = \sum_{k = 0}^n \binom n k a^k b^{n - k}$
+    \item Somme sur $n$: $\sum_{n = p}^q \binom n k = \binom{q + 1}{k + 1} - \binom{p}{k + 1}$
+\end{itemize}
+
+\subsection{Nombre de Fibonacci}
+$$
+    F_0 = 0 \qquad F_1 = 1 \qquad F_{n + 2} = F_{n - 1} + F_n
+$$
+\begin{center}
+\begin{tabular}{c|cccccccccc}
+    $n$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ \\
+    $F_n$ & $0$ & $1$ & $1$ & $2$ & $3$ & $5$ & $8$ & $13$ & $21$ & $34$
+\end{tabular}
+\end{center}
+$$
+    F_{n + 1} = \sum_{k = 0}^n \binom{n - k} k
+$$
+
+\subsection{Principe d'inclusion-exclusion}
+$$
+    \abs{\bigcup_{i \in I} A_i} = \sum_{\substack{J \subset I \\ J \neq \emptyset}} (-1)^{\abs J - 1} \abs{\bigcap_{j \in J} A_j}
+$$
+
+\subsection{Nombres de Catalan}
+Le nombre d'arbres binaires à $n+1$ feuilles est
+$$
+    C_n = \frac 1 {n + 1}\binom{2n} n
+$$
+\begin{center}
+\begin{tabular}{c|cccccccccc}
+    $n$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ \\
+    $C_n$ & $1$ & $1$ & $2$ & $5$ & $14$ & $42$ & $132$ & $429$ & $1430$ & $4862$
+\end{tabular}
+\end{center}
+Formule de récurrence $C_{n + 1} = \sum_{i = 0}^n C_i C_{n-i}$
+
+\subsection{Formule de Cayley et théorème de Kirchhoff}
+Il y a $n^{n - 2}$ arbres sur les sommets $\set{1, \dots, n}$ : écrire le voisin de la feuille minimale, la supprimer et recommencer jusqu'à n'avoir que deux sommets:
+
+Le nombre d'arbres couvrants de $G = (V, E)$ est la valeur des mineurs de rang $n - 1$ du laplacien $L$ de $G$
+$$
+    L_{ij} = \left\{\begin{aligned}
+        \deg(i) &\text{ si } i = j \\
+        -1 &\text{ si } \{i,j\} \in E \\
+        0 &\text{sinon}
+    \end{aligned}\right.
+$$
+\section{Graphes}
+
+\subsection{DFS : parcours en profondeur}
+\inputminted[breaklines,tabsize=4]{cpp}{code/dfs.cpp}
+\subsection{BFS : parcours en largeur}
+\inputminted[breaklines,tabsize=4]{cpp}{code/bfs.cpp}
+
+\subsection{Plus court chemin}
+\paragraph{Poids positifs : Dijkstra}
+\inputminted[breaklines,tabsize=4]{cpp}{code/dijkstra.cpp}
+\paragraph{Bellman--Ford}
+\inputminted[breaklines,tabsize=4]{cpp}{code/bellmanford.cpp}
+\paragraph{Entre toutes paires : Floyd--Warshall}
+\inputminted[breaklines,tabsize=4]{cpp}{code/floydwarshall.cpp}
+
+\subsection{Cycles et chemins eulériens}
+\inputminted[breaklines,tabsize=4]{cpp}{code/euler.cpp}
+
+\subsection{Composantes fortement connexes : Kosaraju}
+\inputminted[breaklines,tabsize=4]{cpp}{code/kosaraju.cpp}
+
+\subsection{Ponts}
+\inputminted[breaklines,tabsize=4]{cpp}{code/bridges.cpp}
+
+\subsection{Sommets d'articulation}
+\inputminted[breaklines,tabsize=4]{cpp}{code/articulations.cpp}
+
+\subsection{Arbre couvrant minimal}
+\paragraph{Kruskal}
+\inputminted[breaklines,tabsize=4]{cpp}{code/kruskal.cpp}
+\paragraph{Prim}
+\inputminted[breaklines,tabsize=4]{cpp}{code/prim.cpp}
+
+\subsection{Couplage maximal}
+\inputminted[breaklines,tabsize=4]{cpp}{code/matching.cpp}
+
+\subsection{Flot maximal : Ford Fulkerson}
+\inputminted[breaklines,tabsize=4]{cpp}{code/fordfulkerson.cpp}
+Scaling capacity : $O(n^2 \log c_{\max})$
+
+\section{Structures de données}
+
+\subsection{Dichotomie}
+\inputminted[breaklines,tabsize=4]{cpp}{code/binary_search.cpp}
+
+\subsection{Tri et statistiques}
+\paragraph{STL}
+\inputminted[breaklines,tabsize=4]{cpp}{code/sort.cpp}
+\paragraph{Tri fusion}
+\inputminted[breaklines,tabsize=4]{cpp}{code/mergesort.cpp}
+
+\subsection{Disjoint Set Union : Union Find}
+\inputminted[breaklines,tabsize=4]{cpp}{code/dsu.cpp}
+
+\subsection{Arbre binaire}
+\inputminted[breaklines,tabsize=4]{cpp}{code/bintree.cpp}
+
+\subsection{Arbre binaire avec propagation paresseuse}
+\inputminted[breaklines,tabsize=4]{cpp}{code/lazytree.cpp}
+
+\subsection{Arbre binaire persistant}
+\inputminted[breaklines,tabsize=4]{cpp}{code/persistenttree.cpp}
+
+\subsection{Arbre cart\'esien}
+\inputminted[breaklines,tabsize=4]{cpp}{code/treap.cpp}
+
+\subsection{Décomposition heavy light}
+\inputminted[breaklines,tabsize=4]{cpp}{code/heavylight.cpp}
+
+\subsection{Range minimum query}
+\inputminted[breaklines,tabsize=4]{cpp}{code/rmq.cpp}
+
+\subsection{Plus petit ancêtre commun}
+\paragraph{Binary lifting}
+\inputminted[breaklines,tabsize=4]{cpp}{code/lca.cpp}
+\paragraph{RMQ}
+\inputminted[breaklines,tabsize=4]{cpp}{code/rmqlca.cpp}
+
+\section{Chaînes de caractères}
+
+\subsection{Knuth--Morris--Pratt}
+$$
+    \pi(i) = \max\{j < i, s[0\dots j[ = s[i-j+1 \dots i+1[\}
+$$
+\inputminted[breaklines,tabsize=4]{cpp}{code/kmp.cpp}
+
+\subsection{Fonction Z}
+$$
+    z(i) = \max\{j \geq 1, s[i\dots i+j[ = s[0\dots j[\}
+$$
+\inputminted[breaklines,tabsize=4]{cpp}{code/zfunction.cpp}
+
+\subsection{Suffix array}
+\inputminted[breaklines,tabsize=4]{cpp}{code/suffixarray.cpp}
+
+\subsection{Aho-Corasick}
+\inputminted[breaklines,tabsize=4]{cpp}{code/aho_corasick.cpp}
+
+\subsection{Automate des suffixes}
+\begin{align*}
+    \mathrm{endpos}(u) &= \{i, s[i - |u| + 1 \dots i] = u\} \text{ la classe de $u$ i.e. l'état de l'automate} \\
+    \mathrm{link}(u) &= \mathrm{endpos}(v) \text{ avec $v$ plus grand suffixe de $u$ tq } \mathrm{endpos}(u) \subsetneq \mathrm{endpos}(v) 
+\end{align*}
+\inputminted[breaklines,tabsize=4]{cpp}{code/suffixautomaton.cpp}
+
+\section{Géométrie}
+
+\subsection{Formules}
+\begin{enumerate}
+    \item $u^\perp = iu$
+    \item $u \cdot v = \Re u \Re v + \Im u \Im v = \Re(\bar u v) = \abs u \abs v \cos(u, v)$
+    \item $\det(u, v) = \Re u \Im v - \Im u \Re v = \Im(\bar u v) = \abs u \abs v \sin(u, v)$
+    \item Formule de Cramer $2 \times 2$: $tu + sv = a \iff t = \frac{\det(a, v)}{\det(u, v)} \text{ et } s = \frac{\det(u,a)}{\det(u,v)}$
+    \item Projet\'e de $c$ sur $(ab)$:
+    $$
+        h = a + \frac{(c - a)\cdot(b - a)}{\abs{b - a}^2}(b - a)
+    $$
+    \item $\abs{h - a} = \frac{\abs{(c - a)\cdot(b - a)}}{\abs{b - a}}$
+    \item $\abs{h - c} = \frac{\abs{\det(c - a, b - a)}}{\abs{b - a}}$
+    \item $a$, $b$ et $c$ sont align\'es si $\det(b - a, c - a) = 0$
+    \item La droite $c$ et $d$ sont de part et d'autre de $(ab)$ si:
+    $$
+        \det(b - a, c - a) \det(b - a, d - a) \leq 0
+    $$
+    \item Les segments $[ab]$ et $[cd]$ se coupent si:
+    $$
+        \det(b - a, c - a)\det(b - a, d - a) \leq 0 \text{ et} \det(d - c, a - c)\det(d - c, b - c) \leq 0
+    $$
+    \item Si $a + \R u$ et $b + \R v$ sont deux droites
+        \begin{itemize}
+            \item Elles sont confondues si $u = v$ et $\det(b - a, u) = 0$
+            \item Elles sont parall\`eles si $u = v$ et $\det(b - a, u) \neq 0$
+            \item Elles se coupent en $z = a + \frac{\det(a - b, v)}{\det(u, v)}u$ sinon
+        \end{itemize}
+    \item Le milieu de $[ab]$ est $\frac{a+b}{2}$ et la m\'ediatrice est $\frac{a+b}{2} + \R i(b-a)$
+    \item Si $a$, $b$ et $c$ sont trois points non align\'es alors le centre du cercle passant par $a$, $b$ et $c$ est
+    $$
+        \frac 1 2 \left(a + b + \frac{(c - b)(c - a)}{\det(b - a, c - a)}i(b - a)\right)
+    $$
+    \item L'aire du triangle $(abc)$ est $\frac 1 2 \abs{\det(b - a, c - a)}$
+    \item L'aire du polygone $(a_1\dots a_n)$ est avec $a_{n + 1} = a_1$
+    $$
+        \abs{\sum_{i = 1}^n \frac 1 2 (\Re a_{i + 1} - \Re a_i)(\Im a_i + \Im a_{i+1})}
+    $$
+    \item Th\'eor\`eme de Pick: soit un polygone $A$. Alors
+    $$
+        \abs{A} = \abs{A^\circ \cap \Z^2} + \frac 1 2 \abs{\partial A \cap \Z^2} - 1
+    $$
+\end{enumerate}
+
+\subsection{Bases}
+\inputminted[breaklines,tabsize=4]{cpp}{code/geometry.cpp}
+\texttt{ltarg} compare les arguments principaux dans $[-\pi, \pi[$ avec $\arg 0 = -\pi$.
+
+\subsection{Convex hull trick}
+
+Soient trois droites $f_i(x) = a_ix + b_i$ avec $a_1 < a_2 < a_3$. Alors
+$$
+    \forall x, f_2(x) < \max(f_1(x), f_3(x))
+    \iff \Re(f_1 \cap f_2) < \Re(f_1 \cap f_3)
+$$
+avec
+$$
+    \Re(f_1 \cap f_2) = -\frac{b_2 - b_1}{a_2 - a_1}
+$$
+
+\subsection{Enveloppe convexe : scan de Graham}
+\inputminted[breaklines,tabsize=4]{cpp}{code/graham.cpp}
+
+\subsection{Tester si un point est dans un polygone}
+\inputminted[breaklines,tabsize=4]{cpp}{code/inside.cpp}
+
+\section{Algèbre}
+\subsection{Th\'eor\`eme des restes chinois}
+Si $n_1, \dots n_r$ sont des entiers deux \`a deux premiers entre eux alors
+$$
+    \Phi : x[n_1\dots n_r] \in \Z/(n_1\dots n_r)\Z \mapsto (x[n_1], \dots, x[n_r]) \in \Z/n_1\Z \times \dots \times \Z/n_r\Z
+$$
+est un isomorphisme d'anneaux d'inverse avec $n_ju_{ij} \equiv 1 [n_i]$
+$$
+    \Phi^{-1}(a_1[n_1], \dots, a_r[n_r]) = \sum_{i = 1}^r \left(\prod_{j \neq i}n_j u_{ij} \right) a_i [n_1\dots n_r]
+$$
+
+\subsection{Indicatrice d'Euler}
+$$
+    \phi(n) = |\Z/n\Z^*| = \#\set{k \in \set{1, \dots, n}, k \land n = 1}
+$$
+\begin{enumerate}
+    \item $\varphi$ est multiplicative : si $n \land m = 1$ alors $\varphi(nm) = \varphi(n)\varphi(m)$
+    \item $\varphi(p^k) = p^k - p^{k - 1}$ si $p$ est premier
+\end{enumerate}
+\inputminted[breaklines,tabsize=4]{cpp}{code/totient.cpp}
+
+\subsection{Inversion de Möbius}
+Soit $\mathcal A = \set{f, f : \N^* \to \C}$ qu'on munit de $+$ et $*$ la convolution de Dirichlet
+$$
+    (f * g)(n) = \sum_{ij = n} f(i)g(j) = \sum_{d \mid n} f(d)g(n/d)
+$$
+$\mathcal A$ est un anneau commutatif de neutre multiplicatif $\delta_1$. On pose la fonction de Möbius
+$$
+    \mu(p_1^{k_1} \dots p_r^{k_r}) = \left\{\begin{aligned}
+        (-1)^r \text{ si } \forall i, k_i = 1 \\
+        0 \text{ sinon}
+    \end{aligned}\right.
+$$
+On a les propri\'et\'es
+\begin{enumerate}
+    \item $1 * \mu = \delta_1$
+    \item $1 * \varphi = \mathrm{id}$
+    \item $\varphi$ est multiplicative : si $n \land m = 1$ alors $\varphi(nm) = \varphi(n)\varphi(m)$
+    \item $\mu$ est multiplicative
+    \item une convol\'ee de deux fonctions multiplicatives l'est
+\end{enumerate}
+
+\subsection{Euclide et inverse modulaire}
+\inputminted[breaklines,tabsize=4]{cpp}{code/euclid.cpp}
+
+\subsection{Crible d'\'Eratosthène}
+\inputminted[breaklines,tabsize=4]{cpp}{code/sieve.cpp}
+
+\subsection{Exponentiation rapide}
+\inputminted[breaklines,tabsize=4]{cpp}{code/fastexp.cpp}
+
+\subsection{FFT}
+\inputminted[breaklines,tabsize=4]{cpp}{code/fft.cpp}
+Ne pas oublier de diviser par $N$ pour la FFT inverse. Ne marche que pour les puissances de $2$ (taille du polynôme). Pour multiplier des polynômes, multiplier terme à terme  les coefficients de Fourier. Ne pas oublier qu'il faut garder une marge d'un facteur $2$ pour que le polynôme produit puisse aussi passer en sens inverse.
+
+\subsection{Pivot de Gauss}
+\inputminted[breaklines,tabsize=4]{cpp}{code/gauss.cpp}
+
+\subsection{Simplexe}
+$$
+    \min c^\top x \text{ sous les contraintes } Ax \leq b \text{ et } x \geq 0
+$$
+\inputminted[breaklines,tabsize=4]{cpp}{code/simplex.cpp}
+
+\subsection{Big Int}
+\inputminted[breaklines,tabsize=4]{cpp}{code/bigint.cpp}
+
+\end{document}
+
